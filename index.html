@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Global Pulse</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#FFF8FA;--surface:#FFFFFF;--pink:#FDE4EC;--blue:#E2F0FB;--yellow:#FFF0B8;--ink:#2B2540;--muted:#6B6580;--accent:#C2456E;--accent-ink:#FFFFFF;--line:#F3D6E0;--bluedeep:#2F6FA8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1D1823;--surface:#272030;--pink:#3A2531;--blue:#1F3141;--yellow:#4A4020;--ink:#F6EEF3;--muted:#B9B0C4;--accent:#F07AA0;--accent-ink:#1D1823;--line:#43354A;--bluedeep:#8CC2EE}}
+:root[data-theme="dark"]{--bg:#1D1823;--surface:#272030;--pink:#3A2531;--blue:#1F3141;--yellow:#4A4020;--ink:#F6EEF3;--muted:#B9B0C4;--accent:#F07AA0;--accent-ink:#1D1823;--line:#43354A;--bluedeep:#8CC2EE}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "DM Sans",system-ui,sans-serif;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0;line-height:1.2}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+header{background:var(--pink);padding:22px 0 26px;border-bottom:1px solid var(--line)}
+header h1{font-size:30px}
+header p{margin:4px 0 14px;color:var(--muted)}
+.search{width:100%;max-width:480px;padding:12px 16px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit}
+.view{display:none}.view.on{display:block}
+section{margin:28px 0}
+h2{font-size:22px;margin-bottom:12px}
+.brief{background:var(--yellow);border-radius:20px;padding:20px 22px}
+.brief ul{margin:8px 0 0;padding-left:20px}.brief li{margin:6px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.card{border:0;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.card:hover,.card:focus-visible{transform:translateY(-2px);box-shadow:0 6px 18px rgba(194,69,110,.15)}
+.card h3{font-size:18px;margin:8px 0 4px}.card p{margin:0;color:var(--muted);font-size:14px}
+.dot{display:inline-block;width:38px;height:38px;border-radius:12px;line-height:38px;text-align:center;font-size:20px}
+.c1 .dot{background:var(--pink)}.c2 .dot{background:var(--blue)}.c3 .dot{background:var(--yellow)}.c4 .dot{background:var(--pink)}
+.back{background:none;border:0;color:var(--accent);font:inherit;font-weight:700;cursor:pointer;padding:16px 0 0}
+.lead{color:var(--muted);max-width:60ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;margin:14px 0}
+.panel h2{font-size:20px}
+.tag{display:inline-block;background:var(--blue);color:var(--bluedeep);border-radius:999px;padding:2px 12px;font-size:13px;font-weight:700;margin:0 6px 6px 0}
+.note{font-size:13px;color:var(--muted)}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--ink);font:12px "DM Sans",sans-serif}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:12px 22px;font:inherit;font-weight:700;cursor:pointer}
+.btn.alt{background:var(--blue);color:var(--bluedeep)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.col{border-radius:18px;padding:16px}.pro{background:var(--blue)}.con{background:var(--pink)}
+.col h3{font-size:18px;margin-bottom:8px}
+.item{background:var(--surface);border-radius:12px;padding:12px;margin:8px 0;font-size:15px}
+.item a{color:var(--bluedeep);font-size:13px;word-break:break-all}
+form{display:grid;gap:10px}
+select,textarea,input.f{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit}
+.err{color:var(--accent);font-size:14px;min-height:20px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px));z-index:10}
+nav button{background:none;border:0;font:inherit;color:var(--muted);padding:6px 14px;border-radius:12px;cursor:pointer}
+nav button.on{background:var(--yellow);color:var(--ink);font-weight:700}
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20;max-width:90%}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <h1>Global Pulse</h1>
+  <p>One topic, every angle: politics, economy, lifestyle and people.</p>
+  <input class="search" type="search" id="q" placeholder="Search news, policies, topics" aria-label="Search">
+</div></header>
+
+<div class="wrap">
+
+<!-- HOME -->
+<div class="view on" id="home">
+  <section class="brief">
+    <h2>Today’s Briefing</h2>
+    <ul>
+      <li><a href="#view" data-go="view" style="color:inherit">New Education Policy: what changes for students</a></li>
+      <li>RBI keeps the repo rate unchanged</li>
+      <li>Global climate summit begins this week</li>
+    </ul>
+    <p class="note">Sample headlines for the prototype.</p>
+  </section>
+  <section>
+    <h2>Explore</h2>
+    <div class="grid" id="cats">
+      <button class="card c1" data-go="view" data-sec="s-pol"><span class="dot">🏛</span><h3>Politics and Policies</h3><p>Elections, laws, bills and rules</p></button>
+      <button class="card c2" data-go="view" data-sec="s-eco"><span class="dot">📈</span><h3>Economy and Growth</h3><p>GDP, markets, industries, trends</p></button>
+      <button class="card c3" data-go="view" data-sec="s-life"><span class="dot">🌸</span><h3>Lifestyle</h3><p>Culture, society, consumer behaviour</p></button>
+      <button class="card c4" data-go="discuss"><span class="dot">💬</span><h3>People</h3><p>Debates, discussions and voices</p></button>
+    </div>
+  </section>
+  <p class="note" id="noresult" style="display:none">No match found. Try “education”, “GDP” or “policy”.</p>
+</div>
+
+<!-- 360 VIEW -->
+<div class="view" id="view">
+  <button class="back" data-go="home">‹ Back to Home</button>
+  <section>
+    <h1>New Education Policy</h1>
+    <p class="lead">A national plan to change how schools and colleges teach and assess students. Here is the same story from four sides.</p>
+    <span class="tag">Politics</span><span class="tag">Economy</span><span class="tag">Lifestyle</span><span class="tag">People</span>
+  </section>
+
+  <div class="panel" id="s-pol"><h2>Politics and Policies</h2>
+    <p>The policy was approved by the Union Cabinet and now needs agreement from state governments, since education is a shared subject. Opposition parties have asked for more discussion on language and funding.</p></div>
+
+  <div class="panel" id="s-eco"><h2>Economy and Growth</h2>
+    <p>Better skills can lift jobs and growth over time. The chart gives context on India’s yearly GDP growth.</p>
+    <svg viewBox="0 0 400 210" role="img" aria-label="Bar chart of India GDP growth by financial year">
+      <line x1="40" y1="150" x2="390" y2="150" stroke="var(--line)"/>
+      <g id="bars"></g>
+    </svg>
+    <p class="note">Sample figures for the prototype. Real data from MoSPI and the World Bank is the next phase.</p></div>
+
+  <div class="panel" id="s-life"><h2>Lifestyle and Society</h2>
+    <p>Families may spend more on coaching, online courses and skill programmes. Students could choose subjects across streams, which changes how young people plan their careers.</p></div>
+
+  <div class="panel" id="s-people"><h2>People Discovery and Sources</h2>
+    <p><b>Voices:</b> teachers, students, parents and education experts.</p>
+    <p class="note">Sources: Ministry of Education, PRS Legislative Research, Press Information Bureau.</p>
+    <button class="btn" data-go="discuss">Join the Discussion</button></div>
+</div>
+
+<!-- DISCUSS -->
+<div class="view" id="discuss">
+  <button class="back" data-go="view">‹ Back to topic</button>
+  <section>
+    <h1>Topic of the day</h1>
+    <p class="lead">Should the New Education Policy be applied the same way in every state?</p>
+  </section>
+  <div class="cols">
+    <div class="col pro"><h3>Pros</h3><div id="list-pro"></div></div>
+    <div class="col con"><h3>Cons</h3><div id="list-con"></div></div>
+  </div>
+  <div class="panel"><h2>Add your view</h2>
+    <form id="form" novalidate>
+      <select id="side" aria-label="Your side"><option value="pro">Pro (in favour)</option><option value="con">Con (against)</option></select>
+      <textarea id="text" rows="3" placeholder="Write your point" aria-label="Your point"></textarea>
+      <input class="f" id="src" type="url" placeholder="Source link, e.g. https://pib.gov.in/..." aria-label="Source link">
+      <div class="err" id="err" role="alert"></div>
+      <div class="row">
+        <button class="btn" type="submit">Post view</button>
+        <button class="btn alt" type="button" data-soon="Audio">Record audio</button>
+        <button class="btn alt" type="button" data-soon="Video">Add video</button>
+      </div>
+    </form>
+    <p class="note">Every view needs a source link. This is how Global Pulse supports evidence-based discussion.</p>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="view" id="about">
+  <section><h1>About Global Pulse</h1>
+  <p class="lead">A 360-degree platform for understanding the world: inform, connect, discuss and verify.</p></section>
+  <div class="panel"><h2>Prototype status</h2>
+    <p>Built with HTML, CSS and JavaScript. It uses sample data. Views are saved in this browser only. Firebase accounts, live data and Hindi support come in the next phase.</p>
+    <p class="note">Team: Pratishta Chauhan, Prachi Naruka, Prachi Chauhan, Ravina Kumari</p></div>
+</div>
+
+</div>
+
+<nav aria-label="Main">
+  <button data-go="home" class="on">Home</button>
+  <button data-go="view">360° View</button>
+  <button data-go="discuss">Discuss</button>
+  <button data-go="about">About</button>
+</nav>
+<div id="toast" role="status"></div>
+
+<script>
+var views=["home","view","discuss","about"];
+function show(id,sec){
+  views.forEach(function(v){document.getElementById(v).classList.toggle("on",v===id)});
+  document.querySelectorAll("nav button").forEach(function(b){b.classList.toggle("on",b.dataset.go===id)});
+  try{history.replaceState(null,"","#"+id)}catch(e){}
+  window.scrollTo(0,0);
+  if(sec){var el=document.getElementById(sec);if(el)setTimeout(function(){el.scrollIntoView({behavior:"smooth"})},50)}
+}
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-go]");
+  if(t){e.preventDefault();show(t.dataset.go,t.dataset.sec);return}
+  var s=e.target.closest("[data-soon]");
+  if(s)toast(s.dataset.soon+" posting is planned for the next phase.");
+});
+function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},2400)}
+
+/* Chart (sample data) */
+(function(){
+  var d=[["FY21",-5.8],["FY22",9.7],["FY23",7.6],["FY24",9.2],["FY25",6.5]],g="",base=150,sc=9;
+  d.forEach(function(p,i){
+    var x=62+i*68,h=Math.abs(p[1])*sc,y=p[1]>=0?base-h:base;
+    g+='<rect x="'+x+'" y="'+y+'" width="40" height="'+h+'" rx="8" fill="'+(p[1]>=0?'var(--bluedeep)':'var(--accent)')+'" opacity=".85"/>';
+    g+='<text x="'+(x+20)+'" y="'+(p[1]>=0?y-6:y+h+14)+'" text-anchor="middle">'+p[1]+'%</text>';
+    g+='<text x="'+(x+20)+'" y="175" text-anchor="middle">'+p[0]+'</text>';
+  });
+  document.getElementById("bars").innerHTML=g;
+})();
+
+/* Discussion, saved in this browser */
+var KEY="gp_views",seed=[
+  {side:"pro",text:"A common framework gives every student the same quality of learning.",src:"https://www.education.gov.in"},
+  {side:"pro",text:"Skills-based learning can improve job readiness.",src:"https://www.pib.gov.in"},
+  {side:"con",text:"States differ in language and resources, so one plan may not fit all.",src:"https://prsindia.org"}];
+function load(){try{var r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return seed.slice()}
+function save(a){try{localStorage.setItem(KEY,JSON.stringify(a))}catch(e){}}
+var items=load();
+function host(u){try{return new URL(u).hostname.replace("www.","")}catch(e){return u}}
+function render(){
+  ["pro","con"].forEach(function(s){
+    var box=document.getElementById("list-"+s);box.innerHTML="";
+    items.filter(function(i){return i.side===s}).forEach(function(i){
+      var d=document.createElement("div");d.className="item";
+      var p=document.createElement("div");p.textContent=i.text;
+      var a=document.createElement("a");a.href=i.src;a.target="_blank";a.rel="noopener";a.textContent="Source: "+host(i.src);
+      d.appendChild(p);d.appendChild(a);box.appendChild(d);
+    });
+  });
+}
+document.getElementById("form").addEventListener("submit",function(e){
+  e.preventDefault();
+  var text=document.getElementById("text").value.trim(),src=document.getElementById("src").value.trim(),err=document.getElementById("err");
+  if(text.length<10){err.textContent="Write at least 10 characters for your point.";return}
+  if(!/^https?:\/\/.+\..+/.test(src)){err.textContent="Add a valid source link starting with http:// or https://";return}
+  err.textContent="";
+  items.push({side:document.getElementById("side").value,text:text,src:src});
+  save(items);render();
+  document.getElementById("text").value="";document.getElementById("src").value="";
+  toast("Your view was posted with its source.");
+});
+render();
+
+/* Search */
+document.getElementById("q").addEventListener("input",function(e){
+  var q=e.target.value.toLowerCase().trim(),n=0;
+  document.querySelectorAll("#cats .card").forEach(function(c){
+    var m=!q||c.textContent.toLowerCase().indexOf(q)>-1;
+    c.style.display=m?"":"none";if(m)n++;
+  });
+  document.getElementById("noresult").style.display=n?"none":"block";
+});
+
+var h=location.hash.replace("#","");if(views.indexOf(h)>-1)show(h);
+</script>
+</body>
+</html>
